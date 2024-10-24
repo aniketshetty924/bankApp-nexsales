@@ -1,0 +1,34 @@
+{
+    "routes":[
+
+        {
+            "controller":"../components/user/controller/user.js",
+            "route":"/api/v1/user/admin",
+            "method":"post",
+            "action":"createAdmin",
+            "isAdmin":false,
+            "isUser":false
+        },
+        {
+            "controller":"../components/user/controller/user.js",
+            "route":"/api/v1/user/login",
+            "method":"post",
+            "action":"login",
+            "isAdmin":false,
+            "isUser":false
+        },
+        {
+            "controller":"../components/user/controller/user.js",
+            "route":"/api/v1/user/user",
+            "method":"post",
+            "action":"createUser",
+            "isAdmin":true,
+            "isUser":false
+
+        }
+
+
+
+      
+    ]
+}
