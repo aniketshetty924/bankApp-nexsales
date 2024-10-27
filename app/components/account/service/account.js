@@ -102,7 +102,7 @@ class AccountService {
         where: {
           userId: userId,
         },
-
+        ...parseFilterQueries(query, accountConfig.filters),
         include: association,
       };
 
@@ -347,6 +347,53 @@ class AccountService {
       await commit(t);
       Logger.info("get balance user account service ended...");
       return account.balance;
+    } catch (error) {
+      await rollBack(t);
+      Logger.error(error);
+    }
+  }
+
+  async getTotalBalance(userId, bankId, t) {
+    if (!t) {
+      t = await transaction();
+    }
+
+    try {
+      Logger.info("get total balance of user service started...");
+      const user = await userConfig.model.findOne(
+        {
+          where: {
+            id: userId,
+          },
+        },
+        { t }
+      );
+
+      if (!user) {
+        throw new NotFoundError(`User with id ${userId} does not exist.`);
+      }
+
+      const bank = await bankConfig.model.findOne(
+        {
+          where: {
+            id: bankId,
+          },
+        },
+        { t }
+      );
+      if (!bank)
+        throw new NotFoundError(`Bank with id ${bankId} does not exists...`);
+
+      const totalBalance = await accountConfig.model.sum("balance", {
+        where: {
+          userId: userId,
+          bankId: bankId,
+        },
+      });
+
+      await commit(t);
+      Logger.info("get total balance of user service ended...");
+      return totalBalance;
     } catch (error) {
       await rollBack(t);
       Logger.error(error);

@@ -1,4 +1,6 @@
+const { Op } = require("sequelize");
 const db = require("../../models");
+const { validateUUID } = require("../utils/uuid");
 
 class BankConfig {
   constructor() {

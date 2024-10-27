@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../../models");
 
 class LedgerConfig {
@@ -36,6 +37,48 @@ class LedgerConfig {
       createdAt: this.model.rawAttributes[this.fieldMapping.createdAt].field,
       updatedAt: this.model.rawAttributes[this.fieldMapping.updatedAt].field,
       deletedAt: this.model.rawAttributes[this.fieldMapping.deletedAt].field,
+    };
+
+    this.filters = {
+      id: (val) => {
+        validateUUID(val);
+        return {
+          [`${this.columnMapping.id}`]: {
+            [Op.eq]: val,
+          },
+        };
+      },
+
+      senderBankId: (val) => {
+        return {
+          [`${this.columnMapping.senderBankId}`]: {
+            [Op.eq]: val,
+          },
+        };
+      },
+
+      receiverBankId: (val) => {
+        return {
+          [`${this.columnMapping.receiverBankId}`]: {
+            [Op.eq]: val,
+          },
+        };
+      },
+
+      senderBankName: (val) => {
+        return {
+          [`${this.columnMapping.senderBankName}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
+      receiverBankName: (val) => {
+        return {
+          [`${this.columnMapping.receiverBankName}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
     };
   }
 }

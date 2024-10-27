@@ -169,6 +169,14 @@
         },
         {
             "controller":"../components/account/controller/account.js",
+            "route":"/api/v1/user/:userId/bank/:bankId/account/total-balance",
+            "method":"get",
+            "action":"getTotalBalance",
+            "isAdmin":false,
+            "isUser":true
+        },
+        {
+            "controller":"../components/account/controller/account.js",
             "route":"/api/v1/user/:userId/account/:accountId/transfer-diff",
             "method":"post",
             "action":"transferWithinDiffBankId",
@@ -182,6 +190,22 @@
             "action":"transferWithinSameBankId",
             "isAdmin":false,
             "isUser":true
+        },
+        {
+            "controller":"../components/ledger/controller/ledger.js",
+            "route":"/api/v1/ledger",
+            "method":"get",
+            "action":"getAllLedgers",
+            "isAdmin":true,
+            "isUser":false
+        },
+        {
+            "controller":"../components/ledger/controller/ledger.js",
+            "route":"/api/v1/ledger/ledgerId",
+            "method":"get",
+            "action":"getLedgerById",
+            "isAdmin":true,
+            "isUser":false
         }
         
 

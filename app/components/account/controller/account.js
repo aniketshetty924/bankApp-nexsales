@@ -199,6 +199,26 @@ class AccountController {
       next(error);
     }
   }
+  async getTotalBalance(req, res, next) {
+    try {
+      Logger.info("get total balance controller started...");
+      const { userId, bankId } = req.params;
+      if (!validateUUID(userId)) {
+        throw new Error("invalid user id...");
+      }
+      if (!validateUUID(bankId)) {
+        throw new Error("invalid bank id...");
+      }
+      const response = await this.accountService.getTotalBalance(
+        userId,
+        bankId
+      );
+      res.status(HttpStatusCode.Ok).json(response);
+      Logger.info("get total balance controller ended...");
+    } catch (error) {
+      next(error);
+    }
+  }
 
   async transferWithinDiffBankId(req, res, next) {
     try {
