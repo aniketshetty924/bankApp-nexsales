@@ -116,8 +116,7 @@ class RouteConfig {
       application.route(route)[method]((req, res, next) => {
         verifyAdmin(req, res, next);
       });
-    }
-    if (isUser === true) {
+    } else if (isUser === true) {
       application.route(route)[method]((req, res, next) => {
         verifyUser(req, res, next);
       });

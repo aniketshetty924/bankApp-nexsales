@@ -19,4 +19,25 @@ const validateAge = (age) => {
     throw new badRequest("Age cannot be less than 18... You are under age...");
 };
 
-module.exports = { validateAge, validateFirstName, validateLastName };
+const validateBankName = (bankName) => {
+  if (typeof bankName != "string")
+    throw new badRequest("invalid bank name type...");
+
+  if (bankName == "" || !bankName) throw new badRequest("invalid bank name...");
+};
+
+const validateAbbreviation = (abbreviation) => {
+  if (typeof abbreviation != "string")
+    throw new badRequest("invalid bank name type...");
+
+  if (abbreviation == "" || !abbreviation)
+    throw new badRequest("invalid bank name...");
+};
+
+module.exports = {
+  validateAge,
+  validateFirstName,
+  validateLastName,
+  validateBankName,
+  validateAbbreviation,
+};

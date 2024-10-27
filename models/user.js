@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      user.hasMany(models.account);
     }
   }
   user.init(
@@ -26,6 +27,14 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "user",
       underscored: true,
       paranoid: true,
+
+      hooks: {
+        beforeUpdate: (user) => {
+          if (user.changed("firstName") || user.changed("lastName")) {
+            user.fullName = `${user.firstName} ${user.lastName}`;
+          }
+        },
+      },
     }
   );
   return user;

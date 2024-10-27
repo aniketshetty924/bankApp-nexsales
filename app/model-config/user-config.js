@@ -1,4 +1,6 @@
+const { Op } = require("sequelize");
 const db = require("../../models");
+const { validateUUID } = require("../utils/uuid");
 
 class UserConfig {
   constructor() {
@@ -31,6 +33,75 @@ class UserConfig {
       createdAt: this.model.rawAttributes[this.fieldMapping.createdAt].field,
       updatedAt: this.model.rawAttributes[this.fieldMapping.updatedAt].field,
       deletedAt: this.model.rawAttributes[this.fieldMapping.deletedAt].field,
+    };
+
+    this.association = {
+      account: "account",
+    };
+
+    this.filters = {
+      id: (val) => {
+        validateUUID(val);
+        return {
+          [`${this.columnMapping.id}`]: {
+            [Op.eq]: val,
+          },
+        };
+      },
+
+      firstName: (val) => {
+        return {
+          [`${this.columnMapping.firstName}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
+      fullName: (val) => {
+        return {
+          [`${this.columnMapping.fullName}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
+
+      lastName: (val) => {
+        return {
+          [`${this.columnMapping.lastName}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
+
+      fullName: (val) => {
+        return {
+          [`${this.columnMapping.fullName}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
+
+      isAdmin: (val) => {
+        return {
+          [`${this.columnMapping.isAdmin}`]: {
+            [Op.eq]: val === "true",
+          },
+        };
+      },
+
+      fromAge: (val) => {
+        return {
+          [`${this.columnMapping.age}`]: {
+            [Op.gte]: val,
+          },
+        };
+      },
+      toAge: (val) => {
+        return {
+          [`${this.columnMapping.age}`]: {
+            [Op.lte]: val,
+          },
+        };
+      },
     };
   }
 }

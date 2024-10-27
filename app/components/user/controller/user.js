@@ -12,6 +12,7 @@ const {
   validateAge,
 } = require("../../../utils/validations.js");
 const { Payload } = require("../../../middleware/authService.js");
+const NotFoundError = require("../../../errors/notFoundError.js");
 
 class UserController {
   constructor() {
@@ -102,6 +103,78 @@ class UserController {
       );
       Logger.info("Create user controller ended...");
       res.status(HttpStatusCode.Created).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAllUsers(req, res, next) {
+    try {
+      Logger.info("getAll users controller called...");
+      const { count, rows } = await this.userService.getAllUsers(req.query);
+      setXTotalCountHeader(res, count);
+      res.status(HttpStatusCode.Ok).json(rows);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUserById(req, res, next) {
+    try {
+      Logger.info("get user by id controller called...");
+      const { userId } = req.params;
+      if (!validateUUID(userId)) {
+        throw new Error("invalid user id...");
+      }
+
+      const response = await this.userService.getUserById(userId, req.query);
+      Logger.info("get user by id controller ended...");
+      res.status(HttpStatusCode.Ok).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateUserById(req, res, next) {
+    try {
+      Logger.info("update user by id controller called...");
+      const { userId } = req.params;
+      const { parameter, value } = req.body;
+      if (typeof parameter != "string")
+        throw new badRequest("invalid parameter type....");
+      if (!validateUUID(userId)) {
+        throw new Error("invalid user id...");
+      }
+
+      const response = await this.userService.updateUserById(
+        userId,
+        parameter,
+        value
+      );
+      if (!response)
+        throw new NotFoundError("user not found or user updation failed....");
+      res
+        .status(HttpStatusCode.Ok)
+        .json({ message: `User with id ${userId} is updated successfully` });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteUserById(req, res, next) {
+    try {
+      Logger.info("delete user by id controller started...");
+      const { userId } = req.params;
+      if (!validateUUID(userId)) {
+        throw new Error("invalid user id...");
+      }
+
+      const response = await this.userService.deleteUserById(userId);
+      if (!response)
+        throw new NotFoundError("user not found or deletion failed...");
+      res
+        .status(HttpStatusCode.Ok)
+        .json({ message: `User with id ${userId} is deleted successfully` });
     } catch (error) {
       next(error);
     }
