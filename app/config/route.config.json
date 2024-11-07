@@ -7,7 +7,8 @@
             "method":"post",
             "action":"createAdmin",
             "isAdmin":false,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
         },
         {
             "controller":"../components/user/controller/user.js",
@@ -15,7 +16,8 @@
             "method":"post",
             "action":"login",
             "isAdmin":false,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
         },
         {
             "controller":"../components/user/controller/user.js",
@@ -23,7 +25,8 @@
             "method":"post",
             "action":"createUser",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -32,7 +35,8 @@
             "method":"get",
             "action":"getAllUsers",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -41,7 +45,8 @@
             "method":"get",
             "action":"getUserById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -50,7 +55,8 @@
             "method":"put",
             "action":"updateUserById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -59,7 +65,8 @@
             "method":"delete",
             "action":"deleteUserById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -68,7 +75,8 @@
             "method":"post",
             "action":"createBank",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -77,7 +85,8 @@
             "method":"get",
             "action":"getAllBanks",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -86,7 +95,8 @@
             "method":"get",
             "action":"getBankById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -95,7 +105,8 @@
             "method":"put",
             "action":"updateBankById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -104,7 +115,8 @@
             "method":"delete",
             "action":"deleteBankById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
 
         },
         {
@@ -113,7 +125,8 @@
             "method":"post",
             "action":"createAccount",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
 
         },
         {
@@ -122,7 +135,8 @@
             "method":"get",
             "action":"getAllAccounts",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
 
         },
         {
@@ -131,7 +145,8 @@
             "method":"get",
             "action":"getAccountById",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
 
         },
         {
@@ -140,7 +155,8 @@
             "method":"delete",
             "action":"deleteAccountById",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
 
         },
         {
@@ -149,7 +165,8 @@
             "method":"post",
             "action":"depositUserAccount",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
         },
         {
             "controller":"../components/account/controller/account.js",
@@ -157,7 +174,8 @@
             "method":"post",
             "action":"withdrawUserAccount",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
         },
         {
             "controller":"../components/account/controller/account.js",
@@ -165,7 +183,8 @@
             "method":"get",
             "action":"getBalanceUserAccount",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
         },
         {
             "controller":"../components/account/controller/account.js",
@@ -173,7 +192,8 @@
             "method":"get",
             "action":"getTotalBalance",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
         },
         {
             "controller":"../components/account/controller/account.js",
@@ -181,7 +201,8 @@
             "method":"post",
             "action":"transferWithinDiffBankId",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
         },
         {
             "controller":"../components/account/controller/account.js",
@@ -189,7 +210,8 @@
             "method":"post",
             "action":"transferWithinSameBankId",
             "isAdmin":false,
-            "isUser":true
+            "isUser":true,
+            "verifyUserId":true
         },
         {
             "controller":"../components/ledger/controller/ledger.js",
@@ -197,7 +219,8 @@
             "method":"get",
             "action":"getAllLedgers",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
         },
         {
             "controller":"../components/ledger/controller/ledger.js",
@@ -205,7 +228,8 @@
             "method":"get",
             "action":"getLedgerById",
             "isAdmin":true,
-            "isUser":false
+            "isUser":false,
+            "verifyUserId":false
         }
         
 

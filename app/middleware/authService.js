@@ -31,19 +31,30 @@ const verifyUser = (req, res, next) => {
 
     let token = req.cookies["auth"].split(" ")[2];
     let payload = Payload.verifyToken(token);
+    console.log("Payload", payload);
     if (payload.isAdmin)
       throw new UnAuthorizedError(
         "Admin can't do this operations , only users can do..."
       );
-    const userId = parseInt(req.params.userId);
-    if (userId != payload.id) {
-      throw new UnAuthorizedError(
-        "You are not authorized to access this account..."
-      );
-    }
+    req.userId = payload.id;
 
     Logger.info("Verifying ended...");
     Logger.info("next called");
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyUserID = (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const id = req.userId;
+    console.log("here", id);
+    if (userId != id)
+      throw new UnAuthorizedError(
+        "You are not authorized to access this account..."
+      );
     next();
   } catch (error) {
     next(error);
@@ -85,4 +96,4 @@ class Payload {
   }
 }
 
-module.exports = { Payload, verifyAdmin, verifyUser };
+module.exports = { Payload, verifyAdmin, verifyUser, verifyUserID };

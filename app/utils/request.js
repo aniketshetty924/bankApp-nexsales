@@ -46,6 +46,10 @@ const parseLimitAndOffset = (query) => {
   if (!isPositiveInteger(page)) {
     throw new errors.BadRequest("Page should be a valid positive integer");
   }
+
+  let offset = (page - 1) * limit;
+
+  return { limit: limit, offset: offset };
 };
 
 /**

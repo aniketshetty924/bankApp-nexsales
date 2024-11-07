@@ -1,4 +1,8 @@
-const { verifyAdmin, verifyUser } = require("../middleware/authService");
+const {
+  verifyAdmin,
+  verifyUser,
+  verifyUserID,
+} = require("../middleware/authService");
 
 class RouteConfig {
   constructor() {}
@@ -91,10 +95,14 @@ class RouteConfig {
   }
 
   getIsUser(routeItem) {
-    if (routeItem.isAdmin === true) {
+    if (routeItem.isUser === true) {
       return true;
     }
     return false;
+  }
+
+  getVerifyUserId(routeItem) {
+    return routeItem.verifyUserId;
   }
 
   registerRoute(
@@ -105,7 +113,8 @@ class RouteConfig {
     action,
     secured,
     isAdmin,
-    isUser
+    isUser,
+    verifyUserId
   ) {
     // if (secured) {
     //   application.route(route)[method]((req, res, next) => {
@@ -121,6 +130,13 @@ class RouteConfig {
         verifyUser(req, res, next);
       });
     }
+
+    if (verifyUserId) {
+      application.route(route)[method]((req, res, next) => {
+        verifyUserID(req, res, next);
+      });
+    }
+
     application.route(route)[method]((req, res, next) => {
       controller[action](req, res, next);
     });
@@ -144,6 +160,7 @@ class RouteConfig {
       const secured = this.getSecured(routeItem);
       const isAdmin = this.getIsAdmin(routeItem);
       const isUser = this.getIsUser(routeItem);
+      const verifyUserId = this.getVerifyUserId(routeItem);
 
       this.registerRoute(
         application,
@@ -153,7 +170,8 @@ class RouteConfig {
         action,
         secured,
         isAdmin,
-        isUser
+        isUser,
+        verifyUserId
       );
     }
   }

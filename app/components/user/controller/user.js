@@ -22,18 +22,18 @@ class UserController {
   async login(req, res, next) {
     try {
       Logger.info("Login controller started");
-      const { username, password, userId } = req.body;
+      const { username, password } = req.body;
       if (typeof username != "string")
         throw new badRequest("invalid username type");
       if (typeof password != "string")
         throw new badRequest("invalid password type");
-      validateUUID(userId);
+      // validateUUID(userId);
 
       const user = await this.userService.findUser(username);
       if (!user) throw new NotFoundError("user does not exists...");
 
       if (await bcrypt.compare(password, user.password)) {
-        let payload = Payload.newPayload(userId, user.isAdmin);
+        let payload = Payload.newPayload(user.id, user.isAdmin);
         let token = payload.signPayload();
         res.cookie("auth", `Bearer ${token}`);
 
