@@ -2,6 +2,7 @@ const { HttpStatusCode } = require("axios");
 const Logger = require("../../../utils/logger");
 const { setXTotalCountHeader } = require("../../../utils/response");
 const LedgerService = require("../service/ledger");
+const { validateUUID } = require("../../../utils/uuid");
 class LedgerController {
   constructor() {
     this.ledgerService = new LedgerService();
@@ -25,8 +26,8 @@ class LedgerController {
       Logger.info("get ledger by id controller started...");
 
       const { ledgerId } = req.params;
-      if (!validateUUID(bankId)) {
-        throw new Error("invalid bank id...");
+      if (!validateUUID(ledgerId)) {
+        throw new Error("invalid ledger id...");
       }
 
       const response = await this.ledgerService.getLedgerById(

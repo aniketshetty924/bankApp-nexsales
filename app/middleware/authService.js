@@ -6,6 +6,8 @@ const verifyAdmin = (req, res, next) => {
   try {
     Logger.info("verifying admin started...");
     console.log("cookies", req.cookies["auth"]);
+    console.log("cookies", req.headers["auth"]);
+
     if (!req.cookies["auth"] && !req.headers["auth"]) {
       throw new UnAuthorizedError("Cookie Not Found...");
     }

@@ -70,7 +70,7 @@ class BankController {
 
       if (typeof parameter != "string")
         throw new badRequest("invalid parameter type....");
-      if (!validateUUID(userId)) {
+      if (!validateUUID(bankId)) {
         throw new Error("invalid user id...");
       }
 

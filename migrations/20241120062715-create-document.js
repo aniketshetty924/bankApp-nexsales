@@ -2,20 +2,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("banks", {
+    await queryInterface.createTable("documents", {
       id: {
         allowNull: false,
+
         primaryKey: true,
         type: Sequelize.UUID,
       },
-      bank_name: {
-        allowNull: false,
-        type: Sequelize.STRING,
+      fileLinks: {
+        type: Sequelize.TEXT,
       },
-      abbreviation: {
+      user_id: {
+        type: Sequelize.UUID,
+        reference: { key: "id", model: "users" },
         allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
       },
       created_at: {
         allowNull: false,
@@ -31,6 +31,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("banks");
+    await queryInterface.dropTable("documents");
   },
 };

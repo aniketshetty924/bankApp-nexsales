@@ -8,38 +8,44 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID,
       },
-      first_name: {
-        allowNull: false,
-
+      username: {
         type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      first_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       last_name: {
-        allowNull: false,
-
         type: Sequelize.STRING,
+        allowNull: false,
       },
       full_name: {
         allowNull: false,
-
         type: Sequelize.STRING,
       },
-      username: {
+      date_of_birth: {
+        type: Sequelize.DATEONLY,
         allowNull: false,
-        type: Sequelize.STRING,
       },
-      password: {
-        allowNull: false,
+      kyc_status: {
         type: Sequelize.STRING,
-      },
-      age: {
         allowNull: false,
-
-        type: Sequelize.INTEGER,
       },
       is_admin: {
-        allowNull: false,
         type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
+
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -49,6 +55,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deleted_at: {
+        allowNull: true,
         type: Sequelize.DATE,
       },
     });

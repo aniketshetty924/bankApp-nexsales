@@ -224,7 +224,7 @@
         },
         {
             "controller":"../components/ledger/controller/ledger.js",
-            "route":"/api/v1/ledger/ledgerId",
+            "route":"/api/v1/ledger/:ledgerId",
             "method":"get",
             "action":"getLedgerById",
             "isAdmin":true,

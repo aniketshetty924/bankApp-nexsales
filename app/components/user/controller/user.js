@@ -38,7 +38,7 @@ class UserController {
         res.cookie("auth", `Bearer ${token}`);
 
         res.set("auth", `Bearer ${token}`);
-        res.status(200).send(token);
+        res.status(200).send({ token: token, user: user });
       } else {
         res.status(403).json({
           message: "password incorrect",
@@ -51,11 +51,11 @@ class UserController {
   }
   async createAdmin(req, res, next) {
     try {
-      Logger.info("Create user controller started...");
-      const { firstName, lastName, username, password, age } = req.body;
+      Logger.info("Create admin controller started...");
+      const { firstName, lastName, username, password, email, dob } = req.body;
       validateFirstName(firstName);
       validateLastName(lastName);
-      validateAge(age);
+
       if (firstName === lastName)
         throw new badRequest("first name and last name cannot be same...");
       if (typeof username != "string")
@@ -63,16 +63,20 @@ class UserController {
       if (typeof password != "string")
         throw new badRequest("invalid password type");
 
+      let id = createUUID();
+      let kycStatus = "Not done";
       let response = await this.userService.createUser(
-        createUUID(),
+        id,
         firstName,
         lastName,
         username,
         password,
-        age,
+        email,
+        dob,
+        kycStatus,
         true
       );
-      Logger.info("Create user controller ended...");
+      Logger.info("Create admin controller ended...");
       res.status(HttpStatusCode.Created).json(response);
     } catch (error) {
       next(error);
@@ -83,22 +87,26 @@ class UserController {
     try {
       Logger.info("Create user controller started...");
 
-      const { firstName, lastName, age, username, password } = req.body;
+      const { firstName, lastName, username, password, email, dob } = req.body;
       validateFirstName(firstName);
       validateLastName(lastName);
-      validateAge(age);
+
       if (typeof username != "string")
         throw new badRequest("invalid username type");
       if (typeof password != "string")
         throw new badRequest("invalid password type");
 
+      let id = createUUID();
+      let kycStatus = "Not done";
       let response = await this.userService.createUser(
-        createUUID(),
+        id,
         firstName,
         lastName,
         username,
         password,
-        age,
+        email,
+        dob,
+        kycStatus,
         false
       );
       Logger.info("Create user controller ended...");
@@ -113,7 +121,7 @@ class UserController {
       Logger.info("getAll users controller called...");
       const { count, rows } = await this.userService.getAllUsers(req.query);
       setXTotalCountHeader(res, count);
-      res.status(HttpStatusCode.Ok).json(rows);
+      res.status(HttpStatusCode.Ok).json({ totalCount: count, users: rows });
     } catch (error) {
       next(error);
     }
@@ -156,6 +164,21 @@ class UserController {
       res
         .status(HttpStatusCode.Ok)
         .json({ message: `User with id ${userId} is updated successfully` });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateKycStatus(req, res, next) {
+    try {
+      Logger.info("Update KYC Status controller started...");
+      const { userId, statusMessage } = req.body;
+      await this.userService.updateKycStatus(userId, statusMessage);
+      res.status(HttpStatusCode.Ok).json({
+        message: `User with user id ${userId} KYC status is updated successfully to ${statusMessage}`,
+      });
+
+      Logger.info("Update KYC Status controller ended...");
     } catch (error) {
       next(error);
     }

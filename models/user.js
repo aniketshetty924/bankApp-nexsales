@@ -10,16 +10,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       user.hasMany(models.account);
+      user.hasMany(models.document);
     }
   }
   user.init(
     {
+      username: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING,
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       fullName: DataTypes.STRING,
-      username: DataTypes.STRING,
-      password: DataTypes.STRING,
-      age: DataTypes.INTEGER,
+      dateOfBirth: DataTypes.DATEONLY,
+      kycStatus: DataTypes.STRING,
       isAdmin: DataTypes.BOOLEAN,
     },
     {

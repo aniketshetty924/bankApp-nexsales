@@ -60,7 +60,9 @@ class UserService {
     lastName,
     username,
     password,
-    age,
+    email,
+    dateOfBirth,
+    kycStatus,
     isAdmin,
     t
   ) {
@@ -83,7 +85,9 @@ class UserService {
           fullName,
           username,
           password: hashedPassword,
-          age,
+          email,
+          dateOfBirth,
+          kycStatus,
           isAdmin,
         },
         { t }
@@ -221,6 +225,28 @@ class UserService {
     //   await rollBack(t);
     //   Logger.error(error);
     // }
+  }
+
+  async updateKycStatus(userId, statusMessage, t) {
+    if (!t) {
+      t = await transaction();
+    }
+    try {
+      Logger.info("Update KYC Status service started...");
+      const user = await userConfig.model.findByPk(userId, { transaction: t });
+
+      if (!user) {
+        throw new NotFoundError(`User with id ${userId} does not exist.`);
+      }
+      user.kycStatus = statusMessage;
+      await user.save({ transaction: t });
+      commit(t);
+      Logger.info("Update KYC Status service ended...");
+    } catch (error) {
+      await rollBack(t);
+      Logger.error(error);
+      throw error;
+    }
   }
 
   async deleteUserById(userId, t) {
