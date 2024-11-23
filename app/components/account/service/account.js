@@ -14,6 +14,8 @@ const passbookConfig = require("../../../model-config/passbook-config");
 const ledgerConfig = require("../../../model-config/ledger-config");
 const { createUUID } = require("../../../utils/uuid");
 const badRequest = require("../../../errors/badRequest");
+const documentConfig = require("../../../model-config/document-config");
+const sendEmail = require("../../../utils/email");
 
 class AccountService {
   #associationMap = {
@@ -58,6 +60,18 @@ class AccountService {
       let bankName = bank.dataValues.bankName;
       console.log(`Bank Name : ${bankName}`);
       let balance = 1000;
+
+      const kyc = await documentConfig.model.findOne({
+        where: {
+          userId: userId,
+        },
+        transaction: t,
+      });
+      if (kyc.status !== "approved") {
+        throw new UnauthorizedError(
+          "You cannot create account because your KYC is not completed"
+        );
+      }
       const newAccount = await accountConfig.model.create(
         {
           id,
@@ -70,6 +84,11 @@ class AccountService {
       );
       await commit(t);
       Logger.info("create account service ended...");
+      await sendEmail(
+        user.email,
+        "Account Created",
+        `Hi ${user.fullName}! Your account has been successfully created`
+      );
       return newAccount;
     } catch (error) {
       await rollBack(t);
@@ -179,6 +198,11 @@ class AccountService {
 
       if (rowsDeleted === 0)
         throw new NotFoundError(`Account with id ${accountId} does not exists`);
+      await sendEmail(
+        user.email,
+        "Account Deleted",
+        `Hi ${user.fullName}! your account with account number ${accountId} has been deleted successfully.`
+      );
 
       await commit(t);
       Logger.info("delete account by id service ended...");
@@ -189,7 +213,7 @@ class AccountService {
     }
   }
 
-  async depositUserAccount(userId, bankId, accountId, amount, t) {
+  async depositUserAccount(userId, accountId, amount, t) {
     if (!t) {
       t = await transaction();
     }
@@ -220,6 +244,7 @@ class AccountService {
       if (!account) {
         throw new NotFoundError(`account with id ${accountId} does not exist.`);
       }
+      const bankId = account.bankId;
       // console.log("Before balance", account.balance);
       // console.log("amount", amount);
       account.balance += amount;
@@ -239,7 +264,13 @@ class AccountService {
         },
         { t }
       );
+
       await commit(t);
+      await sendEmail(
+        user.email,
+        "Amount Deposited",
+        `Hi ${user.fullName}! Rs ${amount} has been successfully deposited in your account with account number ${accountId}.`
+      );
       Logger.info("create passbook entry ended...");
 
       Logger.info("deposit user account service ended...");
@@ -250,7 +281,7 @@ class AccountService {
     }
   }
 
-  async withDrawUserAccount(userId, bankId, accountId, amount, t) {
+  async withDrawUserAccount(userId, accountId, amount, t) {
     if (!t) {
       t = await transaction();
     }
@@ -280,6 +311,7 @@ class AccountService {
       if (!account) {
         throw new NotFoundError(`account with id ${accountId} does not exist.`);
       }
+      const bankId = account.bankId;
       if (account.balance <= 1000)
         throw new badRequest(
           "oops you cannot withdraw money since you have to maintain a minimum of Rs 1000 in account!"
@@ -302,7 +334,11 @@ class AccountService {
       );
       await commit(t);
       Logger.info("create passbook entry ended...");
-
+      await sendEmail(
+        user.email,
+        "Amount Withdrawn",
+        `Hi ${user.fullName}! Rs ${amount} has been successfully withdrawn from your account with account number ${accountId}.`
+      );
       Logger.info("withdraw  user account service ended...");
       return account;
     } catch (error) {
@@ -509,9 +545,22 @@ class AccountService {
         receiverBankName,
         amount
       );
-
+      const receiverUserId = receiverBankAccount.userId;
+      const receiverUser = await userConfig.model.findByPk(receiverUserId, {
+        transaction: t,
+      });
       await commit(t);
       Logger.info("transfer within diff bank id service started...");
+      await sendEmail(
+        user.email,
+        "Amount Debited",
+        `Hi ${user.fullName}! Rs ${amount} has been debited from your account with account number ${senderAccountId}.`
+      );
+      await sendEmail(
+        receiverUser.email,
+        "Amount Credited",
+        `Hi ${receiverUser.fullName}! Rs ${amount} has been credited to your account with account number ${receiverAccountId}`
+      );
       return senderBalance;
     } catch (error) {
       await rollBack(t);
@@ -618,8 +667,22 @@ class AccountService {
         },
         { t }
       );
-
+      const receiverUserId = receiverBankAccount.userId;
+      const receiverUser = await userConfig.model.findByPk(receiverUserId, {
+        transaction: t,
+      });
       await commit(t);
+      await sendEmail(
+        user.email,
+        "Amount Debited",
+        `Hi ${user.fullName}! Rs ${amount} has been debited from your account with account number ${senderAccountId}`
+      );
+
+      await sendEmail(
+        receiverUser.email,
+        "Amount Credited",
+        `Hi ${receiverUser.fullName}! Rs ${amount} has been credited to your account with account id ${receiverAccountId}`
+      );
       Logger.info("receiver passbook entry ended...");
       return senderBalance;
     } catch (error) {

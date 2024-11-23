@@ -13,7 +13,7 @@ class UserConfig {
       password: "password",
       email: "email",
       dateOfBirth: "dateOfBirth",
-      kycStatus: "kycStatus",
+
       isAdmin: "isAdmin",
       createdAt: "createdAt",
       updatedAt: "updatedAt",
@@ -34,7 +34,6 @@ class UserConfig {
       email: this.model.rawAttributes[this.fieldMapping.email].field,
       dateOfBirth:
         this.model.rawAttributes[this.fieldMapping.dateOfBirth].field,
-      kycStatus: this.model.rawAttributes[this.fieldMapping.kycStatus].field,
 
       createdAt: this.model.rawAttributes[this.fieldMapping.createdAt].field,
       updatedAt: this.model.rawAttributes[this.fieldMapping.updatedAt].field,
@@ -43,6 +42,7 @@ class UserConfig {
 
     this.association = {
       account: "account",
+      document: "document",
     };
 
     this.filters = {
@@ -50,13 +50,6 @@ class UserConfig {
         validateUUID(val);
         return {
           [`${this.columnMapping.id}`]: {
-            [Op.eq]: val,
-          },
-        };
-      },
-      kycStatus: (val) => {
-        return {
-          [`${this.columnMapping.kycStatus}`]: {
             [Op.eq]: val,
           },
         };
@@ -92,6 +85,20 @@ class UserConfig {
           },
         };
       },
+      username: (val) => {
+        return {
+          [`${this.columnMapping.username}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
+      email: (val) => {
+        return {
+          [`${this.columnMapping.email}`]: {
+            [Op.like]: `%${val}%`,
+          },
+        };
+      },
 
       isAdmin: (val) => {
         return {
@@ -101,20 +108,20 @@ class UserConfig {
         };
       },
 
-      // fromAge: (val) => {
-      //   return {
-      //     [`${this.columnMapping.age}`]: {
-      //       [Op.gte]: val,
-      //     },
-      //   };
-      // },
-      // toAge: (val) => {
-      //   return {
-      //     [`${this.columnMapping.age}`]: {
-      //       [Op.lte]: val,
-      //     },
-      //   };
-      // },
+      dateOfBirthGreaterThan: (val) => {
+        return {
+          [`${this.columnMapping.dateOfBirth}`]: {
+            [Op.gt]: val,
+          },
+        };
+      },
+      dateOfBirthLessThan: (val) => {
+        return {
+          [`${this.columnMapping.dateOfBirth}`]: {
+            [Op.lt]: val,
+          },
+        };
+      },
     };
   }
 }

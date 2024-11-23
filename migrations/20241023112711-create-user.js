@@ -37,10 +37,7 @@ module.exports = {
         type: Sequelize.DATEONLY,
         allowNull: false,
       },
-      kyc_status: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
+
       is_admin: {
         type: Sequelize.BOOLEAN,
         allowNull: false,

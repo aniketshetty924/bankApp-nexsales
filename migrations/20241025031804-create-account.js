@@ -12,11 +12,13 @@ module.exports = {
         type: Sequelize.UUID,
         references: { key: "id", model: "users" },
         allowNull: false,
+        onDelete: "CASCADE",
       },
       bank_id: {
         allowNull: false,
         type: Sequelize.UUID,
         references: { key: "id", model: "banks" },
+        onDelete: "CASCADE",
       },
       bank_name: {
         allowNull: false,
@@ -36,6 +38,7 @@ module.exports = {
       },
       deleted_at: {
         type: Sequelize.DATE,
+        allowNull: true,
       },
     });
   },

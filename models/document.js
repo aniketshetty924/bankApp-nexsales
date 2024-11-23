@@ -9,12 +9,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      document.belongsTo(models.user);
+      document.belongsTo(models.user, {
+        foreignKey: "userId",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+        hooks: true,
+      });
     }
   }
   document.init(
     {
       fileLinks: DataTypes.TEXT,
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: "not submitted",
+        validate: {
+          isIn: [["not done", "submitted", "pending", "approved", "rejected"]],
+        },
+      },
+      adminNote: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize,

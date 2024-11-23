@@ -13,6 +13,7 @@ const {
   parseFilterQueries,
   parseSelectFields,
 } = require("../../../utils/request.js");
+const sendEmail = require("../../../utils/email.js");
 
 class UserService {
   #associationMap = {
@@ -93,7 +94,18 @@ class UserService {
         { t }
       );
       await commit(t);
+      try {
+        await sendEmail(
+          email,
+          "Registration successful",
+          `Hi ${fullName}! Your registration has been successful. Your username is :- ${username} and password is :- ${password}`
+        );
+      } catch (emailError) {
+        Logger.error(`Error sending email: ${emailError.message}`);
+        // Handle email failure gracefully
+      }
       Logger.info("create user service ended...");
+
       return response;
     } catch (error) {
       await rollBack(t);
@@ -174,6 +186,42 @@ class UserService {
     }
   }
 
+  async getUserByUsername(username, query, t) {
+    if (!t) {
+      t = await transaction();
+    }
+    try {
+      Logger.info("get user by username service started...");
+      let selectArray = parseSelectFields(query, userConfig.fieldMapping);
+      if (!selectArray) {
+        selectArray = Object.values(userConfig.fieldMapping);
+      }
+
+      const includeQuery = query.include || [];
+      let association = [];
+      if (includeQuery) {
+        association = this.#createAssociations(includeQuery);
+      }
+
+      const arg = {
+        attributes: selectArray,
+        where: {
+          username: username,
+        },
+        transaction: t,
+        include: association,
+      };
+      const response = await userConfig.model.findOne(arg);
+      await commit(t);
+
+      Logger.info("get user by username service ended...");
+      return response;
+    } catch (error) {
+      await rollBack(t);
+      Logger.error(error);
+    }
+  }
+
   async updateUserById(userId, parameter, value, t) {
     if (!t) {
       t = await transaction();
@@ -192,6 +240,16 @@ class UserService {
       await user.save({ transaction: t });
 
       commit(t);
+      const mail = `
+      Hi ${user.fullName}, 
+      
+      Your account has been successfully updated. Your updated user details is : name :- ${user.fullName}, username :- ${user.username}, email :- ${user.email}, Date of Birth :- ${user.dateOfBirth}`;
+      try {
+        await sendEmail(user.email, "User Details Update Notification", mail);
+      } catch (emailError) {
+        Logger.error(`Error sending email: ${emailError.message}`);
+      }
+
       Logger.info("update user by id service ended...");
       return user;
     } catch (error) {
@@ -241,6 +299,7 @@ class UserService {
       user.kycStatus = statusMessage;
       await user.save({ transaction: t });
       commit(t);
+
       Logger.info("Update KYC Status service ended...");
     } catch (error) {
       await rollBack(t);
@@ -256,7 +315,14 @@ class UserService {
 
     try {
       Logger.info("delete user by id service started...");
+      const user = await userConfig.model.findByPk(userId, { transaction: t });
 
+      if (!user) {
+        throw new NotFoundError(`User with id ${userId} does not exist.`);
+      }
+      let fullName = user.fullName;
+      let email = user.email;
+      let username = user.username;
       const rowsDeleted = await userConfig.model.destroy({
         where: { id: userId },
         transaction: t,
@@ -266,6 +332,12 @@ class UserService {
         throw new NotFoundError(`User with id ${userId} does not exists...`);
 
       await commit(t);
+      const mail = `Hi ${fullName}! your User account with username ${username} has been deleted successfully!`;
+      try {
+        await sendEmail(email, "User Details Update Notification", mail);
+      } catch (emailError) {
+        Logger.error(`Error sending email: ${emailError.message}`);
+      }
       Logger.info("delete user by id service ended...");
       return rowsDeleted;
     } catch (error) {

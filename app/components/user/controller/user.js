@@ -143,6 +143,23 @@ class UserController {
     }
   }
 
+  async getUserByUsername(req, res, next) {
+    try {
+      Logger.info("Get user by username controller started...");
+      const { username } = req.params;
+      if (typeof username != "string")
+        throw new badRequest("Invalid username type!");
+      const response = await this.userService.getUserByUsername(
+        username,
+        req.query
+      );
+      Logger.info("Get user by username controller ended...");
+      res.status(HttpStatusCode.Ok).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateUserById(req, res, next) {
     try {
       Logger.info("update user by id controller called...");

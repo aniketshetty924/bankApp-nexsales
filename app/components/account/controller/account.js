@@ -104,15 +104,13 @@ class AccountController {
   async depositUserAccount(req, res, next) {
     try {
       Logger.info("Deposit user account controller called...");
-      const { amount, bankId } = req.body;
+      const { amount } = req.body;
       const { userId, accountId } = req.params;
 
       if (!validateUUID(userId)) {
         throw new Error("invalid user id...");
       }
-      if (!validateUUID(bankId)) {
-        throw new Error("invalid bank id...");
-      }
+
       if (!validateUUID(accountId)) {
         throw new Error("invalid account id...");
       }
@@ -124,7 +122,7 @@ class AccountController {
 
       const response = await this.accountService.depositUserAccount(
         userId,
-        bankId,
+
         accountId,
         amount
       );
@@ -141,7 +139,7 @@ class AccountController {
   async withdrawUserAccount(req, res, next) {
     try {
       Logger.info("withdraw user account controller started...");
-      const { amount, bankId } = req.body;
+      const { amount } = req.body;
       const { userId, accountId } = req.params;
 
       if (!validateUUID(userId)) {
@@ -151,10 +149,6 @@ class AccountController {
         throw new Error("invalid account id...");
       }
 
-      if (!validateUUID(bankId)) {
-        throw new Error("invalid bank id...");
-      }
-
       if (amount <= 0)
         throw new badRequest(
           "invalid amount... amount cannot be less than or equal to zero"
@@ -162,7 +156,7 @@ class AccountController {
 
       const response = await this.accountService.withDrawUserAccount(
         userId,
-        bankId,
+
         accountId,
         amount
       );

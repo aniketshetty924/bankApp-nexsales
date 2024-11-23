@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../../models");
 
 class PassbookConfig {
@@ -24,6 +25,25 @@ class PassbookConfig {
       createdAt: this.model.rawAttributes[this.fieldMapping.createdAt].field,
       updatedAt: this.model.rawAttributes[this.fieldMapping.updatedAt].field,
       deletedAt: this.model.rawAttributes[this.fieldMapping.deletedAt].field,
+    };
+
+    this.filters = {
+      id: (val) => {
+        validateUUID(val);
+        return {
+          [`${this.columnMapping.id}`]: {
+            [Op.eq]: val,
+          },
+        };
+      },
+      accountId: (val) => {
+        validateUUID(val);
+        return {
+          [`${this.columnMapping.accountId}`]: {
+            [Op.eq]: val,
+          },
+        };
+      },
     };
   }
 }

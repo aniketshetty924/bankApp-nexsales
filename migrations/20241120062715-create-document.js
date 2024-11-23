@@ -9,13 +9,22 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.UUID,
       },
-      fileLinks: {
+      file_links: {
         type: Sequelize.TEXT,
       },
       user_id: {
         type: Sequelize.UUID,
         reference: { key: "id", model: "users" },
         allowNull: false,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      status: {
+        type: Sequelize.STRING,
+        defaultValue: "not done",
+      },
+      admin_note: {
+        type: Sequelize.STRING,
       },
       created_at: {
         allowNull: false,

@@ -51,6 +51,16 @@
         },
         {
             "controller":"../components/user/controller/user.js",
+            "route":"/api/v1/user/get/:username",
+            "method":"get",
+            "action":"getUserByUsername",
+            "isAdmin":true,
+            "isUser":false,
+            "verifyUserId":false
+
+        },
+        {
+            "controller":"../components/user/controller/user.js",
             "route":"/api/v1/user/:userId",
             "method":"put",
             "action":"updateUserById",
@@ -229,6 +239,54 @@
             "action":"getLedgerById",
             "isAdmin":true,
             "isUser":false,
+            "verifyUserId":false
+        },
+        {
+            "controller":"../components/passbook/controller/passbook.js",
+            "route":"/api/v1/passbook/user/:userId/account/:accounId",
+            "method":"get",
+            "action":"viewPassbook",
+            "isAdmin":false,
+            "isUser":true,
+            "verifyUserId":true
+        },
+        {
+            "controller":"../components/kyc/controller/kyc.js",
+            "route":"/api/v1/kyc/user/:userId",
+            "method":"get",
+            "action":"getUserKyc",
+            "isAdmin":false,
+            "isUser":true,
+            "verifyUserId":true
+        },
+        {
+            "controller": "../components/kyc/controller/kyc.js",
+            "route": "/api/v1/kyc/user/:userId",
+            "method": "put",
+            "action": "submitKYC",
+            
+            "isAdmin" : false,
+            "isUser" : true,
+            "verifyUserId":true
+        },
+        {
+            "controller": "../components/kyc/controller/kyc.js",
+            "route": "/api/v1/kyc-request",
+            "method": "get",
+            "action": "getSubmittedKYCs",
+          
+            "isAdmin" : true,
+            "isUser" : false,
+            "verifyUserId":false
+        },
+        {
+            "controller": "../components/kyc/controller/kyc.js",
+            "route": "/api/v1/kyc-request",
+            "method": "put",
+            "action": "updateKYCStatus",
+          
+            "isAdmin" : true,
+            "isUser" : false,
             "verifyUserId":false
         }
         

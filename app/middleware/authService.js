@@ -12,7 +12,7 @@ const verifyAdmin = (req, res, next) => {
       throw new UnAuthorizedError("Cookie Not Found...");
     }
 
-    let token = req.cookies["auth"].split(" ")[2];
+    let token = req.headers["auth"].split(" ")[2];
     let payload = Payload.verifyToken(token);
     if (!payload.isAdmin) throw new UnAuthorizedError("Unauthorized access...");
 
@@ -31,7 +31,7 @@ const verifyUser = (req, res, next) => {
       throw new UnAuthorizedError("Cookie not found...");
     }
 
-    let token = req.cookies["auth"].split(" ")[2];
+    let token = req.headers["auth"].split(" ")[2];
     let payload = Payload.verifyToken(token);
     console.log("Payload", payload);
     if (payload.isAdmin)
